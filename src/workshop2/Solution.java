@@ -163,6 +163,27 @@ public class Solution {
 		}
 		return solutions;
 	}
+	
+	static public List<Solution> loadAllByExerciseId (Connection conn, int id) throws SQLException {
+		ArrayList<Solution> solutions = new ArrayList<Solution>();
+		String sql = "SELECT * FROM solution WHERE excercise_id = ?";
+		PreparedStatement prepStat = conn.prepareStatement(sql);
+		prepStat.setInt(1, id);
+		ResultSet rs = prepStat.executeQuery();
+		while (rs.next()) {
+			Solution solution = new Solution();
+			solution.id = rs.getInt(1);
+			solution.created = rs.getTimestamp(2);
+			solution.updated = rs.getTimestamp(3);
+			solution.description = rs.getString(4);
+			solution.excercise_id = rs.getInt(5);
+			solution.user_id = rs.getInt(6);
+			solutions.add(solution);
+		}
+		return solutions;
+	}
+	
+	
 	public void delete(Connection conn) throws SQLException {
 		if (this.id != 0) {
 			String sql = "DELETE FROM solution WHERE id = ?;";

@@ -18,6 +18,7 @@ public class User {
 	public int getId() {
 		return id;
 	}
+
 	public String getUsername() {
 		return username;
 	}
@@ -120,20 +121,36 @@ public class User {
 			loadedUser.email = resultSet.getString("email");
 			users.add(loadedUser);
 		}
-		//pierwotnie metoda zwracała tablice (User[])
-		//User[] uArray = new User[users.size()];
-		//uArray = users.toArray(uArray);
 		return users;
 	}
+
+	static public List<User> loadAllByGrupId(Connection conn, int id) throws SQLException {
+		ArrayList<User> users = new ArrayList<User>();
+		String sql = "SELECT * FROM users WHERE person_group_id = ?";
+		PreparedStatement prepStat = conn.prepareStatement(sql);
+		prepStat.setInt(1, id);
+		ResultSet rs = prepStat.executeQuery();
+		while (rs.next()) {
+			User loadedUser = new User();
+			loadedUser.id = rs.getInt("id");
+			loadedUser.username = rs.getString("username");
+			loadedUser.password = rs.getString("password");
+			loadedUser.email = rs.getString("email");
+			users.add(loadedUser);
+		}
+		return users;
+
+	}
+
 	public void delete(Connection conn) throws SQLException {
 		if (this.id != 0) {
-		String sql = "DELETE FROM Users WHERE id= ?";
-		PreparedStatement preparedStatement;
-		preparedStatement = conn.prepareStatement(sql);
-		preparedStatement.setInt(1, this.id);
-		preparedStatement.executeUpdate();
-		this.id=0;
+			String sql = "DELETE FROM Users WHERE id= ?";
+			PreparedStatement preparedStatement;
+			preparedStatement = conn.prepareStatement(sql);
+			preparedStatement.setInt(1, this.id);
+			preparedStatement.executeUpdate();
+			this.id = 0;
 		}
-		}
+	}
 
 }
